@@ -34,7 +34,7 @@ jobs:
         chmod 600 ~/.ssh/id_ras
         
     - name: actions을 사용하여 보안 환경변수를 이용하여 개인키 파일 생성
-      uses: webfactiory/ssh-agent@v0.5.3
+      uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
         
