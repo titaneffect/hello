@@ -40,7 +40,7 @@ jobs:
     - name: 서버연결시 지문등록
       run: |
         for i in 1 2 3 4 5; do
-          ssh-keyscan -T 10 3.35.22.125 >> ~/.ssh/known_hosts && break
+          ssh-keyscan -T 10 13.209.73.29 >> ~/.ssh/known_hosts && break
           echo "ssh-keyscan 재시도: $i"
           sleep 5
         done
@@ -57,9 +57,9 @@ jobs:
           -o BatchMode=yes \
           -o ConnectTimeout=10 \
           target/hello-1.0.0.war \
-          ubuntu@3.35.22.125:~/ROOT.war
+          ubuntu@13.209.73.29:~/ROOT.war
     
-        ssh -i ~/.ssh/id_rsa ubuntu@3.35.22.125 << 'EOF'
+        ssh -i ~/.ssh/id_rsa ubuntu@13.209.73.29 << 'EOF'
           cp ~/ROOT.war /opt/tomcat/webapps/
         EOF
       
