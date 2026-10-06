@@ -38,7 +38,12 @@ jobs:
         ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
         
     - name: 서버연결시 지문등록
-      run: ssh-keyscan -t ed25519 3.35.22.125 >> ~/.ssh/known_hosts
+      run: |
+        for i in 1 2 3 4 5; do
+          ssh-keyscan -T 10 3.35.22.125 >> ~/.ssh/known_hosts && break
+          echo "ssh-keyscan 재시도: $i"
+          sleep 5
+        done
        
 #    - name: 개인키파일확인 
 #      run: |
