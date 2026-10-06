@@ -29,9 +29,9 @@ jobs:
       
     - name: 보안 환경변수를 이용하여 개인키 파일 생성
       run: | 
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ras
-        chmod 600 ~/.ssh/id_ras
+        mkdir -p "$HOME/.ssh"
+        echo "${{ secrets.SERVER_SSH_KEY }}" > "$HOME/.ssh/id_ras"
+        chmod 600 "$HOME/.ssh/id_ras"
         
     - name: actions을 사용하여 보안 환경변수를 이용하여 개인키 파일 생성
       uses: webfactory/ssh-agent@v0.5.3
@@ -39,7 +39,7 @@ jobs:
         ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
         
     - name: 서버 연결시 지문 등록
-      run: ssh-keyscan -t ed25519 3.35.22.125 >> ~/.ssh/known_hosts
+      run: ssh-keyscan -T 10 -t ed25519 3.35.22.125 >> "$HOME/.ssh/known_hosts"
       
 #    - name: 개인키 파일 확인
 #      run: |
