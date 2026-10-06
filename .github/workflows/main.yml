@@ -52,7 +52,13 @@ jobs:
  
     - name: 운영서버에 배포 진행 
       run: |
-        scp target/hello-1.0.0.war ubuntu@3.35.22.125:~/ROOT.war
+        scp -vvv \
+          -i ~/.ssh/id_rsa \
+          -o BatchMode=yes \
+          -o ConnectTimeout=10 \
+          target/hello-1.0.0.war \
+          ubuntu@3.35.22.125:~/ROOT.war
+    
         ssh -i ~/.ssh/id_rsa ubuntu@3.35.22.125 << 'EOF'
           cp ~/ROOT.war /opt/tomcat/webapps/
         EOF
