@@ -10,8 +10,17 @@ jobs:
     runs-on: ubuntu-24.04  # 어떤 운영체제 버전에서 실행하는지 설정.
 
     steps:
+    - name: git 저장소 소스 복사 전의 폴더 구조
+      run: ls -la
+    
     - name: source check out
       uses: actions/checkout@v3
-
+      
+    - name: git 저장소 소스 복사 후의 hello 폴더 구조
+            # 리눅스 쉘 명령어 2줄 이상 실행시
+      run: | 
+        ls -la
+        ls -la hello
+        
     - name: maven build
       run: mvn clean package
