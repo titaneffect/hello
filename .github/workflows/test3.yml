@@ -1,0 +1,46 @@
+name: 러너를 사용하여 ec2에서 빌드 및 배포
+
+on:
+  push:
+    branches:
+      - test3      # 주석 : main 브랜치에 push가 되면 actions가 동작함
+
+jobs:
+  build:
+    runs-on: [self-hosted, ec2-hosted]  # 어떤 운영체제 버전에서 실행하는지 설정 cancel-timeout-minutes: cancel-timeout-minutes: 
+
+    steps:
+    
+    # 1. GitHub 저장소의 소스코드 가져오기
+    - name: 소스 check out 
+      uses: actions/checkout@v3
+    
+    # 2. Maven으로 WAR 파일 생성
+    - name: 메이븐 빌드
+      run: mvn clean package -DskipTests
+    
+    # 3. Docker hub 로그인      
+    - name: Docker Hub Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PW }}
+    
+    # 4. Docker 이미지 생성
+    - name: Build Docker Image
+      run: |
+        docker build \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest \
+          .
+          
+    # 5. 러너에서 실행
+    - name: Deploy to EC2
+      run: |
+
+        docker stop hello || true
+        docker rm hello || true
+
+        docker run -d \
+          --name hello \
+          --network host \
+          ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest
