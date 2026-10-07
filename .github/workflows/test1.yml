@@ -1,0 +1,49 @@
+name: 빌드하고 github Actions에서 docker를 이용해 이미지 생성 후, ec2에서 docker container 설치
+
+on:
+  push:
+    branches:
+      - test1
+      
+env:
+  SERVER_IP: 3.35.51.189
+  
+jobs:
+  build:
+    runs-on: ubuntu:latest
+    
+    steps:
+      
+      - name: source check out
+        uses: actions/checkout@v1
+        
+      - name: mvn clean
+        run: mvn clean package
+        
+      - name: build docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest .
+          
+      - name: login to docker hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PW }}
+          
+      - name: push docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest
+          
+      - name: deploy to ec2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ env.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME}}/hello:latest
+            
+            docker stop hello || true
+            docker rm hello || true
+            
+            docker run -d --name hello --network host ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest
