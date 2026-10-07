@@ -54,5 +54,5 @@ jobs:
 
           docker run -d \
             --name hello \
-            -p 8080:8080 \
+            --network host \
             ${{ secrets.DOCKERHUB_USERNAME }}/hello:latest
