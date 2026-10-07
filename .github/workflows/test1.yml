@@ -39,7 +39,7 @@ jobs:
         with:
           host: ${{ env.SERVER_IP }}
           username: ubuntu
-          key: ${{ secrets.SERVER_SSH_KEY }}}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             docker pull ${{ secrets.DOCKERHUB_USERNAME}}/hello:latest
             
